@@ -9,26 +9,30 @@
  * и собирает все вложенные элементы, у которых есть атрибут data-name,
  * в удобный объект для дальнейшего доступа к этим элементам.
  */
-export function cloneTemplate(templateId) {
-    // Находим шаблон в документе по его ID
-    const template = document.getElementById(templateId);
 
-    // Клонируем первый дочерний элемент шаблона вместе со всеми его потомками
+export function cloneTemplate(templateId) {
+    const template = document.getElementById(templateId);
     const clone = template.content.firstElementChild.cloneNode(true);
 
-    // Находим все элементы с атрибутом data-name и создаем объект,
-    // где ключами являются значения data-name, а значениями - сами элементы
     const elements = Array.from(clone.querySelectorAll('[data-name]')).reduce((acc, el) => {
         acc[el.dataset.name] = el;
         return acc;
     }, {});
 
-    // Возвращаем объект с контейнером (клоном шаблона) и именованными элементами
     return {
         container: clone,
         elements: elements
-    };
+    }; //возвращает то, что склонировали и список элементов, где ключ data-id, а значение - элемент
 }
+// итого:
+// {
+//     container: <div class="search-bar">...</div>,  // DOM элемент
+//     elements: {
+//         searchField: <label class="search-wrapper">...</label>,
+//         search: <input type="text" placeholder="Search">,
+//         reset: <button type="reset" class="button reset-wrapper">...</button>
+//     }
+// }
 
 /**
  * Преобразует объект FormData в обычный JavaScript-объект (только одиночные значения)
@@ -44,7 +48,6 @@ export function cloneTemplate(templateId) {
  * (как в случае с multiple select или checkbox).
  */
 export function processFormData(formData) {
-    // Преобразуем entries() в массив пар [ключ, значение] и создаем объект
     return Array.from(formData.entries()).reduce((result, [key, value]) => {
         result[key] = value;
         return result;
@@ -67,8 +70,8 @@ export function processFormData(formData) {
  * вместо O(n) при переборе массива.
  */
 export const makeIndex = (arr, field, val) => arr.reduce((acc, cur) => ({
-    ...acc,  // Копируем все уже накопленные значения
-    [cur[field]]: val(cur)  // Добавляем новое поле с именем из cur[field] и значением из val(cur)
+    ...acc,
+    [cur[field]]: val(cur)
 }), {});
 
 /**
@@ -90,13 +93,11 @@ export const makeIndex = (arr, field, val) => arr.reduce((acc, cur) => ({
  * 3. Диапазон корректируется у краев (начало и конец списка страниц)
  */
 export function getPages(currentPage, maxPage, limit) {
-    // Проверяем, что входные данные являются корректными числами
-    currentPage = Math.max(1, Math.min(maxPage, currentPage));  // currentPage должен быть от 1 до maxPage
-    limit = Math.min(maxPage, limit);  // limit не должен превышать maxPage
+    currentPage = Math.max(1, Math.min(maxPage, currentPage));
+    limit = Math.min(maxPage, limit);
 
-    // Вычисляем диапазон страниц для отображения
-    let start = Math.max(1, currentPage - Math.floor(limit / 2));  // Начинаем с currentPage минус половина лимита
-    let end = start + limit - 1;  // Заканчиваем через limit страниц после start
+    let start = Math.max(1, currentPage - Math.floor(limit / 2));
+    let end = start + limit - 1;
 
     // Корректируем, если мы близко к концу
     if (end > maxPage) {
