@@ -38,7 +38,7 @@ function collectState() {
 function render(action) {
     let state = collectState();
     let result = [...data];
-    //result = applySearching(result, state, action);
+    result = applySearching(result, state, action);
     result = applyFiltering(result, state, action);
     result = applySorting(result, state, action);
     result = applyPagination(result, state, action);
@@ -73,7 +73,7 @@ const applyFiltering = initFiltering(sampleTable.filter.elements, {
     searchBySeller: indexes.sellers
 });
 
-const applySearching = initSearching(sampleTable.search.elements);
+const applySearching = initSearching('search');
 
 const appRoot = document.querySelector('#app');
 appRoot.appendChild(sampleTable.container);
