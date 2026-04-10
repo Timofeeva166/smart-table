@@ -1,21 +1,20 @@
 import {rules, createComparison} from "../lib/compare.js";
 
-export function initSearching(searchField, searchFields = ['seller', 'customer', 'date']) {
+export function initSearching() {
     // Создаем компаратор с настройками для поиска
     const compare = createComparison(
         ['skipEmptyTargetValues'],  // Пропускаем пустые значения в target (state)
         [
             rules.searchMultipleFields(
-                searchField,        // Ключ поиска в state (например 'search')
-                searchFields,       // Поля для поиска в данных
-                false              // caseSensitive = false
+                'search', //ключ для поиска
+                ['seller', 'customer', 'date'] //список полей, по которым ищем
             )
         ]
     );
 
-    return (data, state, action) => {
+    return (data, state) => {
         // Получаем поисковый запрос из state
-        const searchQuery = state[searchField];
+        const searchQuery = state['search'];
         
         // Если запрос пустой или undefined, возвращаем все данные
         if (!searchQuery || searchQuery.trim() === '') {
@@ -23,10 +22,6 @@ export function initSearching(searchField, searchFields = ['seller', 'customer',
         }
         
         // Фильтруем данные с помощью компаратора
-        const filteredData = data.filter(row => compare(row, state));
-        
-        // Важно: возвращаем пустой массив, если ничего не найдено
-        // (это соответствует ТЗ - "возвращать пустую таблицу")
-        return filteredData;
+        return data.filter(row => compare(row, state));
     };
 }

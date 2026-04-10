@@ -36,13 +36,13 @@ function collectState() {
  * @param {HTMLButtonElement?} action
  */
 function render(action) {
-    let state = collectState();
-    let result = [...data];
-    result = applySearching(result, state, action);
-    result = applyFiltering(result, state, action);
-    result = applySorting(result, state, action);
-    result = applyPagination(result, state, action);
-    sampleTable.render(result)
+    let state = collectState(); //собираем все поля и их значения в объект
+    let result = [...data]; //делаем копию данных
+    result = applySearching(result, state, action); //применяем поиск
+    result = applyFiltering(result, state, action); //применяем фильтр
+    result = applySorting(result, state, action); //применяем сортировку
+    result = applyPagination(result, state, action); //применяем пагинацию
+    sampleTable.render(result) //отображаем результат
 }
 
 const sampleTable = initTable({
@@ -73,7 +73,7 @@ const applyFiltering = initFiltering(sampleTable.filter.elements, {
     searchBySeller: indexes.sellers
 });
 
-const applySearching = initSearching('search');
+const applySearching = initSearching();
 
 const appRoot = document.querySelector('#app');
 appRoot.appendChild(sampleTable.container);
