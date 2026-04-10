@@ -38,8 +38,8 @@ function collectState() {
 function render(action) {
     let state = collectState(); //собираем все поля и их значения в объект
     let result = [...data]; //делаем копию данных
-    result = applySearching(result, state, action); //применяем поиск
-    result = applyFiltering(result, state, action); //применяем фильтр
+    result = applySearching(result, state); //применяем поиск
+    result = applyFiltering(result, state); //применяем фильтр
     result = applySorting(result, state, action); //применяем сортировку
     result = applyPagination(result, state, action); //применяем пагинацию
     sampleTable.render(result) //отображаем результат

@@ -1,4 +1,4 @@
-import {createComparison, defaultRules, rules} from "../lib/compare.js";
+import {createComparison, defaultRules} from "../lib/compare.js";
 
 const baseCompare = createComparison(defaultRules);
 
@@ -6,10 +6,10 @@ export function initFiltering(elements, indexes) {
     Object.keys(indexes).forEach((elementName) => {
         elements[elementName].append(
             ...Object.values(indexes[elementName]).map((name) => {
-                const el = document.createElement("option");
-                el.textContent = name;
-                el.value = name;
-                return el;
+                const droplistOption = document.createElement("option");
+                droplistOption.textContent = name;
+                droplistOption.value = name;
+                return droplistOption;
             })
         );
     });
