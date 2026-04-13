@@ -13,15 +13,6 @@ export function initSearching() {
     );
 
     return (data, state) => {
-        // Получаем поисковый запрос из state
-        const searchQuery = state['search'];
-        
-        // Если запрос пустой или undefined, возвращаем все данные
-        if (!searchQuery || searchQuery.trim() === '') {
-            return data;
-        }
-        
-        // Фильтруем данные с помощью компаратора
-        return data.filter(row => compare(row, state));
+        return data.filter(row => compare(row, state)); // Фильтруем данные с помощью компаратора
     };
 }
