@@ -1,8 +1,6 @@
 import './fonts/ys-display/fonts.css'
 import './style.css'
 
-import {data as sourceData} from "./data/dataset_1.js"; //data у нас - данные из первого датасета
-
 import {initData} from "./data.js";
 import {processFormData} from "./lib/utils.js";
 
@@ -52,14 +50,14 @@ function collectState() {
 async function render(action) {
     let state = collectState(); //собираем все поля и их значения в объект
     let query = {}; //параметры запроса
-    //result = applySearching(result, state); //применяем поиск
-    query = applyFiltering(query, state, action);; //применяем фильтр
-    //result = applySorting(result, state, action); //применяем сортировку
+    query = applySearching(query, state, action);
+    query = applyFiltering(query, state, action); //применяем фильтр
+    query = applySorting(query, state, action); //применяем сортировку
     query = applyPagination(query, state, action); //применяем пагинацию
     const { total, items } = await api.getRecords(query);
 
     updatePagination(total, query);
-    sampleTable.render(items) //отображаем результат
+    sampleTable.render(items); //отображаем результат
 }
 
 const sampleTable = initTable({
@@ -82,14 +80,14 @@ const {applyPagination, updatePagination} = initPagination(
     }
 );
 
-//const applySorting = initSorting([
-    //sampleTable.header.elements.sortByDate,
-    //sampleTable.header.elements.sortByTotal
-//]);
+const applySorting = initSorting([
+    sampleTable.header.elements.sortByDate,
+    sampleTable.header.elements.sortByTotal
+]);
 
 const {applyFiltering, updateIndexes} = initFiltering(sampleTable.filter.elements); 
 
-//const applySearching = initSearching();
+const applySearching = initSearching(sampleTable.search.elements);
 
 const appRoot = document.querySelector('#app'); //тег main
 appRoot.appendChild(sampleTable.container); 

@@ -49,17 +49,3 @@ export function initTable(settings, onAction) {
     }
     return {...root, render};
 }
-
-
-
-
-let delayLog = (message, ms) => {
-    return new Promise((rs) => {
-        setTimeout(() => rs(message), ms)
-    });
-};
-
-delayLog("Первый", 1000)
-.then(() => delayLog("Второй", 1000))
-.then(() => delayLog("Третий", 1000))
-.then(console.log)
