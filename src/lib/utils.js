@@ -11,8 +11,8 @@
  */
 
 export function cloneTemplate(templateId) {
-    const template = document.getElementById(templateId);
-    const clone = template.content.firstElementChild.cloneNode(true);
+    const template = document.getElementById(templateId); //получаем шаблон по айдишнику
+    const clone = template.content.firstElementChild.cloneNode(true); //клонируем
 
     const elements = Array.from(clone.querySelectorAll('[data-name]')).reduce((acc, el) => {
         acc[el.dataset.name] = el;
@@ -22,11 +22,11 @@ export function cloneTemplate(templateId) {
     return {
         container: clone,
         elements: elements
-    }; //возвращает то, что склонировали и список элементов, где ключ data-id, а значение - элемент
+    }; //возвращает то, что склонировали и список элементов, где ключ data-name, а значение - элемент
 }
 // итого:
 // {
-//     container: <div class="search-bar">...</div>,  // DOM элемент
+//     container: <div class="search-bar">...</div>,  // DOM элемент с дочерними элементами
 //     elements: {
 //         searchField: <label class="search-wrapper">...</label>,
 //         search: <input type="text" placeholder="Search">,
@@ -47,12 +47,21 @@ export function cloneTemplate(templateId) {
  * только одиночные значения и не поддерживает множественные значения для одного ключа
  * (как в случае с multiple select или checkbox).
  */
-export function processFormData(formData) {
+export function processFormData(formData) { //берет значения из полей
     return Array.from(formData.entries()).reduce((result, [key, value]) => {
         result[key] = value;
         return result;
     }, {});
 }
+// возвращает объект формата
+// customer: "",
+// date: "",
+// rowsPerPage: "10",
+// search: "",
+// seller: "",
+// totalFrom: "",
+// totalTo: ""
+// из данных формы
 
 /**
  * Преобразует коллекцию в объект-индекс по уникальному полю

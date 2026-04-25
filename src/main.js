@@ -13,21 +13,35 @@ import {initFiltering} from "./components/filtering.js"
 import {initSearching} from "./components/searching.js"
 
 
-const {data, ...indexes} = initData(sourceData); //data помещается соответственно в константу data, sellers и customers - в indexes
+const api = initData();
+    // получим
+    // {
+    //  {"seller_1":"Alexey Petrov"......}
+    //  {"customer_1":"Andrey Alekseev"......}
+    // }
+
+    // массив с элементами формата
+    // {
+    //  id: "receipt_19",
+    //  date: "2024-10-03",
+    //  seller: "Ivan Petrov",
+    //  customer: "Petr Petrov",
+    //  total: 4444.44
+    // }
 
 /**
  * Сбор и обработка полей из таблицы
  * @returns {Object}
  */
 function collectState() {
-    const state = processFormData(new FormData(sampleTable.container));
-    const rowsPerPage = parseInt(state.rowsPerPage);
-    const page = parseInt(state.page ?? 1);
+    const state = processFormData(new FormData(sampleTable.container)); //данные по полям
+    const rowsPerPage = parseInt(state.rowsPerPage); //сколько строк показывать
+    const page = parseInt(state.page ?? 1); //номер страницы (1 если не указано)
 
     return {
-        ...state,
-        rowsPerPage,
-        page
+        ...state, //возвращаем копию данных по полям
+        rowsPerPage, //возвращаем кол-во строк на странице
+        page //возвращаем номер страницы
     }; 
 }
 
@@ -35,14 +49,17 @@ function collectState() {
  * Перерисовка состояния таблицы при любых изменениях
  * @param {HTMLButtonElement?} action
  */
-function render(action) {
+async function render(action) {
     let state = collectState(); //собираем все поля и их значения в объект
-    let result = [...data]; //делаем копию данных
-    result = applySearching(result, state); //применяем поиск
-    result = applyFiltering(result, state); //применяем фильтр
-    result = applySorting(result, state, action); //применяем сортировку
-    result = applyPagination(result, state, action); //применяем пагинацию
-    sampleTable.render(result) //отображаем результат
+    let query = {}; //параметры запроса
+    //result = applySearching(result, state); //применяем поиск
+    query = applyFiltering(query, state, action);; //применяем фильтр
+    //result = applySorting(result, state, action); //применяем сортировку
+    query = applyPagination(query, state, action); //применяем пагинацию
+    const { total, items } = await api.getRecords(query);
+
+    updatePagination(total, query);
+    sampleTable.render(items) //отображаем результат
 }
 
 const sampleTable = initTable({
@@ -52,7 +69,8 @@ const sampleTable = initTable({
     after: ['pagination']
 }, render);
 
-const applyPagination = initPagination(
+
+const {applyPagination, updatePagination} = initPagination(
     sampleTable.pagination.elements,
     (el, page, isCurrent) => {
         const input = el.querySelector('input');
@@ -64,18 +82,28 @@ const applyPagination = initPagination(
     }
 );
 
-const applySorting = initSorting([
-    sampleTable.header.elements.sortByDate,
-    sampleTable.header.elements.sortByTotal
-]);
+//const applySorting = initSorting([
+    //sampleTable.header.elements.sortByDate,
+    //sampleTable.header.elements.sortByTotal
+//]);
 
-const applyFiltering = initFiltering(sampleTable.filter.elements, {
-    searchBySeller: indexes.sellers
-});
+const {applyFiltering, updateIndexes} = initFiltering(sampleTable.filter.elements); 
 
-const applySearching = initSearching();
+//const applySearching = initSearching();
 
-const appRoot = document.querySelector('#app');
-appRoot.appendChild(sampleTable.container);
+const appRoot = document.querySelector('#app'); //тег main
+appRoot.appendChild(sampleTable.container); 
 
-render();
+async function init() {
+    const indexes = await api.getIndexes()
+    // берем
+    // {
+    //  {"seller_1":"Alexey Petrov"......}
+    //  {"customer_1":"Andrey Alekseev"......}
+    // }
+    updateIndexes(sampleTable.filter.elements, {
+        searchBySeller: indexes.sellers
+    });
+}
+
+init().then(render);

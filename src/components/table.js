@@ -8,20 +8,21 @@ import {cloneTemplate} from "../lib/utils.js";
  * @returns {{container: Node, elements: *, render: render}}
  */
 export function initTable(settings, onAction) {
-    const {tableTemplate, rowTemplate, before, after} = settings;
+    const {tableTemplate, rowTemplate, before, after} = settings; //шаблон таблички, шаблон строки, шаблон фильтров и шаблон пагинации
     const root = cloneTemplate(tableTemplate); //скопировали шаблон таблицы
+    console.log(root)
 
-    before.reverse().forEach(subName => {
-        root[subName] = cloneTemplate(subName);
-        root.container.prepend(root[subName].container);
+    before.reverse().forEach(subName => { //для каждых из ['search', 'header', 'filter']
+        root[subName] = cloneTemplate(subName); //клонируем
+        root.container.prepend(root[subName].container); //добавляем в начало
     });
 
-    after.forEach(subName => { //добавляем пагинацию. Для каждогоэлемента из массива
+    after.forEach(subName => { //добавляем пагинацию. Для каждого элемента из массива
         root[subName] = cloneTemplate(subName); //клонируем шаблон с айдишником из массива
-        root.container.append(root[subName].container); //ставим элемент перед таблицей
+        root.container.append(root[subName].container); //ставим элемент после таблицы
     });
 
-    root.container.addEventListener("change", onAction);
+    root.container.addEventListener("change", onAction); //вешаем обработчик на событие изменения
     root.container.addEventListener("reset", () => {
         setTimeout(onAction);
     });
@@ -48,3 +49,17 @@ export function initTable(settings, onAction) {
     }
     return {...root, render};
 }
+
+
+
+
+let delayLog = (message, ms) => {
+    return new Promise((rs) => {
+        setTimeout(() => rs(message), ms)
+    });
+};
+
+delayLog("Первый", 1000)
+.then(() => delayLog("Второй", 1000))
+.then(() => delayLog("Третий", 1000))
+.then(console.log)
