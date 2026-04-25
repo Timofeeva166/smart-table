@@ -87,7 +87,7 @@ const applySorting = initSorting([
 
 const {applyFiltering, updateIndexes} = initFiltering(sampleTable.filter.elements); 
 
-const applySearching = initSearching(sampleTable.search.elements);
+const applySearching = initSearching('search');
 
 const appRoot = document.querySelector('#app'); //тег main
 appRoot.appendChild(sampleTable.container); 
