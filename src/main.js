@@ -12,20 +12,6 @@ import {initSearching} from "./components/searching.js"
 
 
 const api = initData();
-    // получим
-    // {
-    //  {"seller_1":"Alexey Petrov"......}
-    //  {"customer_1":"Andrey Alekseev"......}
-    // }
-
-    // массив с элементами формата
-    // {
-    //  id: "receipt_19",
-    //  date: "2024-10-03",
-    //  seller: "Ivan Petrov",
-    //  customer: "Petr Petrov",
-    //  total: 4444.44
-    // }
 
 /**
  * Сбор и обработка полей из таблицы
@@ -51,16 +37,17 @@ async function render(action) {
     console.log(action);
     let state = collectState(); //собираем все поля и их значения в объект
     let query = {}; //параметры запроса
-    query = applySearching(query, state, action);
+    query = applySearching(query, state, action); //применяем поиск
     query = applyFiltering(query, state, action); //применяем фильтр
     query = applySorting(query, state, action); //применяем сортировку
     query = applyPagination(query, state, action); //применяем пагинацию
-    const { total, items } = await api.getRecords(query);
+    const { total, items } = await api.getRecords(query); //ждем кол-во записей и сами записи
 
-    updatePagination(total, query);
+    updatePagination(total, query); //обновляем пагинацию
     sampleTable.render(items); //отображаем результат
 }
 
+//рендерим табличку
 const sampleTable = initTable({
     tableTemplate: 'table',
     rowTemplate: 'row',
@@ -70,8 +57,8 @@ const sampleTable = initTable({
 
 
 const {applyPagination, updatePagination} = initPagination(
-    sampleTable.pagination.elements,
-    (el, page, isCurrent) => {
+    sampleTable.pagination.elements, // передаём сюда элементы пагинации, найденные в шаблоне
+    (el, page, isCurrent) => { // и колбэк, чтобы заполнять кнопки страниц данными
         const input = el.querySelector('input');
         const label = el.querySelector('span');
         input.value = page;
@@ -81,13 +68,12 @@ const {applyPagination, updatePagination} = initPagination(
     }
 );
 
-const applySorting = initSorting([
+const applySorting = initSorting([ // Нам нужно передать сюда массив элементов, которые вызывают сортировку, чтобы изменять их визуальное представление
     sampleTable.header.elements.sortByDate,
     sampleTable.header.elements.sortByTotal
 ]);
 
 const {applyFiltering, updateIndexes} = initFiltering(sampleTable.filter.elements); 
-console.log(sampleTable.filter.elements)
 
 const applySearching = initSearching('search');
 
@@ -96,11 +82,6 @@ appRoot.appendChild(sampleTable.container);
 
 async function init() {
     const indexes = await api.getIndexes()
-    // берем
-    // {
-    //  {"seller_1":"Alexey Petrov"......}
-    //  {"customer_1":"Andrey Alekseev"......}
-    // }
     updateIndexes(sampleTable.filter.elements, {
         searchBySeller: indexes.sellers
     });

@@ -27,10 +27,10 @@ export const initPagination = ({pages, fromRow, toRow, totalRows}, createPage) =
         pageCount = Math.ceil(total / limit);
 
         
-        const visiblePages = getPages(page, pageCount, 5);          
-        pages.replaceChildren(...visiblePages.map(pageNumber => {    
-            const el = pageTemplate.cloneNode(true);                
-            return createPage(el, pageNumber, pageNumber === page);
+        const visiblePages = getPages(page, pageCount, 5); // Получим массив страниц, которые нужно показать, выводим только 5 страниц    
+        pages.replaceChildren(...visiblePages.map(pageNumber => { // перебираем их и создаём для них кнопку  
+            const el = pageTemplate.cloneNode(true); // клонируем шаблон, который запомнили ранее              
+            return createPage(el, pageNumber, pageNumber === page); // вызываем колбэк из настроек, чтобы заполнить кнопку данными
         }))
 
         // оформляем запись о том, сколько строк

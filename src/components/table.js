@@ -10,7 +10,6 @@ import {cloneTemplate} from "../lib/utils.js";
 export function initTable(settings, onAction) {
     const {tableTemplate, rowTemplate, before, after} = settings; //шаблон таблички, шаблон строки, шаблон фильтров и шаблон пагинации
     const root = cloneTemplate(tableTemplate); //скопировали шаблон таблицы
-    console.log(root)
 
     before.reverse().forEach(subName => { //для каждых из ['search', 'header', 'filter']
         root[subName] = cloneTemplate(subName); //клонируем
