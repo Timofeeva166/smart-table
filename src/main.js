@@ -48,6 +48,7 @@ function collectState() {
  * @param {HTMLButtonElement?} action
  */
 async function render(action) {
+    console.log(action);
     let state = collectState(); //собираем все поля и их значения в объект
     let query = {}; //параметры запроса
     query = applySearching(query, state, action);
@@ -86,6 +87,7 @@ const applySorting = initSorting([
 ]);
 
 const {applyFiltering, updateIndexes} = initFiltering(sampleTable.filter.elements); 
+console.log(sampleTable.filter.elements)
 
 const applySearching = initSearching('search');
 

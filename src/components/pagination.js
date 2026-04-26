@@ -10,7 +10,6 @@ export const initPagination = ({pages, fromRow, toRow, totalRows}, createPage) =
         const limit = state.rowsPerPage;
         let page = state.page;
 
-        // переносим код, который делали под @todo: #2.6
         if (action) switch(action.name) {
             case 'prev': page = Math.max(1, page - 1); break; //переход на предыдущую страницу
             case 'next': page = Math.min(pageCount, page + 1); break; //переход на следующую страницу
@@ -27,7 +26,7 @@ export const initPagination = ({pages, fromRow, toRow, totalRows}, createPage) =
     const updatePagination = (total, { page, limit }) => {
         pageCount = Math.ceil(total / limit);
 
-        // переносим код, который делали под @todo: #2.4
+        
         const visiblePages = getPages(page, pageCount, 5);          
         pages.replaceChildren(...visiblePages.map(pageNumber => {    
             const el = pageTemplate.cloneNode(true);                
@@ -40,7 +39,6 @@ export const initPagination = ({pages, fromRow, toRow, totalRows}, createPage) =
         totalRows.textContent = total; //сколько всего строк
     };
 
-    //возвращаем 2 функции
     return {
         updatePagination,
         applyPagination
