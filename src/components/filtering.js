@@ -17,10 +17,10 @@ export function initFiltering(elements) {
             const fieldToClearName = action.dataset.field; // получаем название поля из data-field
             const fieldToClear = Object.values(elements).find(el => el.name === fieldToClearName); //ищем нужное поле в массиве элементов
         
-        if (fieldToClear && fieldToClear.value !== '') { // если нашли и там что-то есть
-            fieldToClear.value = ''; //очищаем поле
+            if (fieldToClear && fieldToClear.value !== '') { // если нашли и там что-то есть
+                fieldToClear.value = ''; //очищаем поле
+            }
         }
-    }
 
         const filter = {}; // объект для сбора параметров фильтрации
         Object.keys(elements).forEach(key => { //для каждого поля
@@ -30,6 +30,7 @@ export function initFiltering(elements) {
                 }
             }
         })
+        
         return Object.keys(filter).length ? Object.assign({}, query, filter) : query; // если в фильтре что-то добавилось, применим к запросу
     }
 
